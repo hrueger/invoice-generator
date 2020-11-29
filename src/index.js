@@ -1,5 +1,6 @@
 import * as path from "path";
 import * as fs from "fs";
+import XLSX from "xlsx";
 
 export async function cli(args) {
     if (!(args[2] && args[2].endsWith(".csv"))) {
@@ -20,7 +21,7 @@ export async function cli(args) {
         fieldIndices[field] = parseInt(idx, 10);
     }
 
-    const csv = [];
+    const finishedData = [];
 
     const data = [];
 
@@ -51,10 +52,28 @@ export async function cli(args) {
         for (const [task, info] of Object.entries(tasks)) {
             total.amount += info.amount;
             total.time += info.duration;
-            csv.push([project, task, info.date, info.duration, info.amount].join());
+            finishedData.push([project, task, new Date(info.date), new Date(info.duration * 1000 - (60*60*1000)), info.amount]);
         }
     }
-    fs.writeFileSync(path.join(process.cwd(), "data.csv"), csv.join("\n"));
+
+    const type = "xlsx";
+    if (type == "csv") {
+        const csv = finishedData.map((l) => l.join());
+        fs.writeFileSync(path.join(process.cwd(), "data.csv"), csv.join("\n"));
+    } else if (type == "xlsx") {
+        const wb = XLSX.utils.book_new();
+        wb.Props = {
+            Title: "Invoice",
+            Subject: "Invoice",
+            Author: "Invoice-Generator",
+            CreatedDate: new Date(),
+        };
+        wb.SheetNames.push("Invoice1");
+        var ws = XLSX.utils.aoa_to_sheet(finishedData.reverse());
+        wb.Sheets.Invoice1 = ws;
+        XLSX.writeFile(wb, "invoice.xlsx");
+    }
+
     console.log(`File written successfully.\nYour total time is ${secondsToTime(total.time)} and you earned ${total.amount} €.`)
 }
 

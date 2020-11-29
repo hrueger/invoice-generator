@@ -13,7 +13,8 @@
         "src/"
     ],
     "dependencies": {
-        "esm": "^3.2.25"
+        "esm": "^3.2.25",
+        "xlsx": "^0.16.9"
     },
     "repository": {
         "type": "git",
