@@ -1,0 +1,28 @@
+{
+    "name": "invoice-generator",
+    "version": "1.0.0",
+    "main": "src/index.js",
+    "bin": {
+        "@hrueger/invoice-generator": "bin/invoice-generator",
+        "invoice-generator": "bin/invoice-generator"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "files": [
+        "src/"
+    ],
+    "dependencies": {
+        "esm": "^3.2.25"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/hrueger/invoice-generator.git"
+    },
+    "author": "Hannes Rüger",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/hrueger/invoice-generator/issues"
+    },
+    "homepage": "https://github.com/hrueger/invoice-generator#readme"
+}
