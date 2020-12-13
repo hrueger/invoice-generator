@@ -348,7 +348,7 @@ export async function cli(args) {
                                     borders: noBorderStyle,
                                 }),
                                 new TableCell({
-                                    children: [new Paragraph({ text: Math.round(tasks.reduce((a, b) => a + b.amount, 0)*100) / 100 + " €", style: "Standard" })],
+                                    children: [new Paragraph({ text: ((Math.round(tasks.reduce((a, b) => a + b.amount, 0)*100) / 100).toFixed(2) + " €").replace(".", ","), style: "Standard" })],
                                     borders: noBorderStyle,
                                 }),
                             ],
@@ -362,7 +362,7 @@ export async function cli(args) {
                 borders: noBorderStyle
             }),
             new Paragraph({
-                text: `Ich bitte Sie, den Betrag von ${total.amount} € unter Angabe der Rechnungsnummer ${options.invoiceId} auf folgendes Konto zu überweisen:`,
+                text: `Ich bitte Sie, den Betrag von ${total.amount.toFixed(2).toString().replace(".", ",")} € unter Angabe der Rechnungsnummer ${options.invoiceId} auf folgendes Konto zu überweisen:`,
                 style: "Standard",
                 spacing: {
                     before: 300,
@@ -533,7 +533,7 @@ export async function cli(args) {
                                     }),
                                     new TableCell({
                                         children: [new Paragraph({
-                                            text: `${info.amount} €`,
+                                            text: `${info.amount.toFixed(2).toString().replace(".", ",")} €`,
                                             style: "Standard",
                                             alignment: AlignmentType.RIGHT,
                                         })],
@@ -566,7 +566,7 @@ export async function cli(args) {
         exec(`${process.platform == "darwin" ? "open" : process.platform == "win32" ? "start" : "xdg-open"} ${filename}`);
     });
 
-    console.log(`File written successfully.\nYour total time is ${secondsToTime(total.time)} h and you earned ${total.amount} €.`)
+    console.log(`File written successfully.\nYour total time is ${secondsToTime(total.time)} h and you earned ${total.amount.toFixed(2)} €.`)
 }
 
 
