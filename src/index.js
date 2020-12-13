@@ -138,6 +138,14 @@ export async function cli(args) {
                     }
                 },
                 {
+                    id: "footer",
+                    basedOn: "Standard",
+                    run: {
+                        color: "#777777",
+                        size: 18,
+                    }
+                },
+                {
                     id: "bold",
                     basedOn: "Standard",
                     run: {
@@ -186,31 +194,15 @@ export async function cli(args) {
                             new TableRow({
                                 children: [
                                     new TableCell({
-                                        children: [new Paragraph({ text: options.me.name, style: "Standard" })],
+                                        children: [new Paragraph({ text: options.me.name, style: "footer" })],
                                         borders: noBorderStyle,
                                     }),
                                     new TableCell({
-                                        children: [new Paragraph({ text: options.me.phone, style: "Standard" })],
+                                        children: [new Paragraph({ text: options.me.phone, style: "footer" })],
                                         borders: noBorderStyle,
                                     }),
                                     new TableCell({
-                                        children: [new Paragraph({ text: `IBAN ${options.me.account.IBAN}`, style: "Standard" })],
-                                        borders: noBorderStyle,
-                                    }),
-                                ],
-                            }),
-                            new TableRow({
-                                children: [
-                                    new TableCell({
-                                        children: [new Paragraph({ text: options.me.address, style: "Standard" })],
-                                        borders: noBorderStyle,
-                                    }),
-                                    new TableCell({
-                                        children: [new Paragraph({ text: options.me.email, style: "Standard" })],
-                                        borders: noBorderStyle,
-                                    }),
-                                    new TableCell({
-                                        children: [new Paragraph({ text: `BIC ${options.me.account.BIC}`, style: "Standard" })],
+                                        children: [new Paragraph({ text: `IBAN ${options.me.account.IBAN}`, style: "footer" })],
                                         borders: noBorderStyle,
                                     }),
                                 ],
@@ -218,15 +210,31 @@ export async function cli(args) {
                             new TableRow({
                                 children: [
                                     new TableCell({
-                                        children: [new Paragraph({ text: options.me.city, style: "Standard" })],
+                                        children: [new Paragraph({ text: options.me.address, style: "footer" })],
                                         borders: noBorderStyle,
                                     }),
                                     new TableCell({
-                                        children: [new Paragraph({ text: options.me.web, style: "Standard" })],
+                                        children: [new Paragraph({ text: options.me.email, style: "footer" })],
                                         borders: noBorderStyle,
                                     }),
                                     new TableCell({
-                                        children: [new Paragraph({ text: options.me.account.bank, style: "Standard" })],
+                                        children: [new Paragraph({ text: `BIC ${options.me.account.BIC}`, style: "footer" })],
+                                        borders: noBorderStyle,
+                                    }),
+                                ],
+                            }),
+                            new TableRow({
+                                children: [
+                                    new TableCell({
+                                        children: [new Paragraph({ text: options.me.city, style: "footer" })],
+                                        borders: noBorderStyle,
+                                    }),
+                                    new TableCell({
+                                        children: [new Paragraph({ text: options.me.web, style: "footer" })],
+                                        borders: noBorderStyle,
+                                    }),
+                                    new TableCell({
+                                        children: [new Paragraph({ text: options.me.account.bank, style: "footer" })],
                                         borders: noBorderStyle,
                                     }),
                                 ],
@@ -490,7 +498,9 @@ export async function cli(args) {
                         alignment: AlignmentType.RIGHT,
                         children: [
                             new TextRun({
-                                style: "Standard",
+                                color: "#777777",
+                                font: "Calibri",
+                                size: 18,
                                 children: ["Seite ", PageNumber.CURRENT, " von ", PageNumber.TOTAL_PAGES],
                             }),
                         ],
