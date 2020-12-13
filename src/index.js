@@ -44,12 +44,12 @@ export async function cli(args) {
         data[line[fieldIndices.Project]][line[fieldIndices.Description]].amount += parseFloat(line[fieldIndices["Billable Amount (EUR)"]]);
     }
     
-    let total = {time: 0, amount: 0};
+    let total = {duration: 0, amount: 0};
     for (const [project, tasks] of Object.entries(data)) {
         for (const [task, info] of Object.entries(tasks)) {
             info.amount = Math.round(info.amount * 100) / 100;
             total.amount += info.amount;
-            total.time += info.duration;
+            total.duration += info.duration;
         }
     }
     total.amount = Math.round(total.amount * 100) / 100;
@@ -81,6 +81,13 @@ export async function cli(args) {
 
     const borderBottomOnly = Object.assign({}, noBorderStyle, {
         bottom: {
+            size: 3,
+            color: "#000",
+            style: BorderStyle.SINGLE,
+        },
+    });
+    const borderTopOnly = Object.assign({}, noBorderStyle, {
+        top: {
             size: 3,
             color: "#000",
             style: BorderStyle.SINGLE,
@@ -128,6 +135,13 @@ export async function cli(args) {
                     id: "Standard",
                     run: {
                         font: "Calibri",
+                    }
+                },
+                {
+                    id: "bold",
+                    basedOn: "Standard",
+                    run: {
+                        bold: true,
                     }
                 },
                 {
@@ -354,6 +368,26 @@ export async function cli(args) {
                             ],
                         });
                     }),
+                    
+                    new TableRow({
+                        children: [
+                            new TableCell({
+                                children: [new Paragraph({ text: "Total:", style: "Standard", alignment: AlignmentType.RIGHT})],
+                                borders: borderTopOnly,
+                                margins: {
+                                    right: 100,
+                                }
+                            }),
+                            new TableCell({
+                                children: [new Paragraph({ text: secondsToTime(total.duration) + " h", style: "bold" })],
+                                borders: borderTopOnly,
+                            }),
+                            new TableCell({
+                                children: [new Paragraph({ text: ((Math.round(total.amount*100) / 100).toFixed(2) + " €").replace(".", ","), style: "bold" })],
+                                borders: borderTopOnly,
+                            }),
+                        ],
+                    }),
                 ],
                 width: {
                     size: 100,
@@ -454,7 +488,7 @@ export async function cli(args) {
                         tableHeader: true,
                         children: [
                             new TableCell({
-                                children: [new Paragraph({ text: "Projekt", style: "Standard" })],
+                                children: [new Paragraph({ text: "Projekt", style: "bold" })],
                                 borders: borderBottomOnly,
                                 width: {
                                     size: tableWidths.project,
@@ -462,7 +496,7 @@ export async function cli(args) {
                                 }
                             }),
                             new TableCell({
-                                children: [new Paragraph({ text: "Aufgabe", style: "Standard" })],
+                                children: [new Paragraph({ text: "Aufgabe", style: "bold" })],
                                 borders: borderBottomOnly,
                                 width: {
                                     size: tableWidths.task,
@@ -470,7 +504,7 @@ export async function cli(args) {
                                 }
                             }),
                             new TableCell({
-                                children: [new Paragraph({ text: "Datum", style: "Standard" })],
+                                children: [new Paragraph({ text: "Datum", style: "bold" })],
                                 borders: borderBottomOnly,
                                 width: {
                                     size: tableWidths.date,
@@ -478,7 +512,7 @@ export async function cli(args) {
                                 }
                             }),
                             new TableCell({
-                                children: [new Paragraph({ text: "Dauer", style: "Standard" })],
+                                children: [new Paragraph({ text: "Dauer", style: "bold" })],
                                 borders: borderBottomOnly,
                                 width: {
                                     size: tableWidths.duration,
@@ -486,7 +520,7 @@ export async function cli(args) {
                                 }
                             }),
                             new TableCell({
-                                children: [new Paragraph({ text: "Betrag", style: "Standard" })],
+                                children: [new Paragraph({ text: "Betrag", style: "bold", alignment: AlignmentType.RIGHT })],
                                 borders: borderBottomOnly,
                                 width: {
                                     size: tableWidths.amount,
@@ -566,7 +600,7 @@ export async function cli(args) {
         exec(`${process.platform == "darwin" ? "open" : process.platform == "win32" ? "start" : "xdg-open"} ${filename}`);
     });
 
-    console.log(`File written successfully.\nYour total time is ${secondsToTime(total.time)} h and you earned ${total.amount.toFixed(2)} €.`)
+    console.log(`File written successfully.\nYour total time is ${secondsToTime(total.duration)} h and you earned ${total.amount.toFixed(2)} €.`)
 }
 
 
