@@ -550,7 +550,7 @@ export async function cli(args) {
                                         }
                                     }),
                                     new TableCell({
-                                        children: [new Paragraph({ text: info.date, style: "Standard" })],
+                                        children: [new Paragraph({ text: new Date(info.date).toLocaleDateString(), style: "Standard", alignment: AlignmentType.RIGHT })],
                                         borders: noBorderStyle,
                                         width: {
                                             size: tableWidths.date,
