@@ -344,25 +344,31 @@ export async function cli(args) {
                                 borders: borderBottomOnly,
                             }),
                             new TableCell({
-                                children: [new Paragraph({ text: "Betrag", style: "bold" })],
+                                children: [new Paragraph({ text: "Betrag", style: "bold", alignment: AlignmentType.RIGHT })],
                                 borders: borderBottomOnly,
                             }),
                         ],
                     }),
                     ...Object.entries(data).map(([project, tasks]) => {
                         tasks = Object.values(tasks);
+                        return {
+                            project,
+                            time: tasks.reduce((a, b) => a + b.duration, 5),
+                            amount: ((Math.round(tasks.reduce((a, b) => a + b.amount, 0) * 100) / 100).toFixed(2) + " €").replace(".", ",")
+                        };
+                    }).sort((a, b) => b.time - a.time).map((t) => {
                         return new TableRow({
                             children: [
                                 new TableCell({
-                                    children: [new Paragraph({ text: project, style: "Standard" })],
+                                    children: [new Paragraph({ text: t.project, style: "Standard" })],
                                     borders: noBorderStyle,
                                 }),
                                 new TableCell({
-                                    children: [new Paragraph({ text: secondsToTime(tasks.reduce((a, b) => a + b.duration, 5)) + " h", style: "Standard" })],
+                                    children: [new Paragraph({ text: secondsToTime(t.time) + " h", style: "Standard" })],
                                     borders: noBorderStyle,
                                 }),
                                 new TableCell({
-                                    children: [new Paragraph({ text: ((Math.round(tasks.reduce((a, b) => a + b.amount, 0)*100) / 100).toFixed(2) + " €").replace(".", ","), style: "Standard" })],
+                                    children: [new Paragraph({ text: t.amount, style: "Standard", alignment: AlignmentType.RIGHT })],
                                     borders: noBorderStyle,
                                 }),
                             ],
@@ -383,7 +389,7 @@ export async function cli(args) {
                                 borders: borderTopOnly,
                             }),
                             new TableCell({
-                                children: [new Paragraph({ text: ((Math.round(total.amount*100) / 100).toFixed(2) + " €").replace(".", ","), style: "bold" })],
+                                children: [new Paragraph({ text: ((Math.round(total.amount*100) / 100).toFixed(2) + " €").replace(".", ","), style: "bold", alignment: AlignmentType.RIGHT })],
                                 borders: borderTopOnly,
                             }),
                         ],
@@ -504,7 +510,7 @@ export async function cli(args) {
                                 }
                             }),
                             new TableCell({
-                                children: [new Paragraph({ text: "Datum", style: "bold" })],
+                                children: [new Paragraph({ text: "Datum", style: "bold", alignment: AlignmentType.RIGHT })],
                                 borders: borderBottomOnly,
                                 width: {
                                     size: tableWidths.date,
@@ -512,7 +518,7 @@ export async function cli(args) {
                                 }
                             }),
                             new TableCell({
-                                children: [new Paragraph({ text: "Dauer", style: "bold" })],
+                                children: [new Paragraph({ text: "Dauer", style: "bold", alignment: AlignmentType.RIGHT })],
                                 borders: borderBottomOnly,
                                 width: {
                                     size: tableWidths.duration,
@@ -558,7 +564,7 @@ export async function cli(args) {
                                         }
                                     }),
                                     new TableCell({
-                                        children: [new Paragraph({ text: secondsToTime(info.duration) + " h", style: "Standard" })],
+                                        children: [new Paragraph({ text: secondsToTime(info.duration) + " h", style: "Standard", alignment: AlignmentType.RIGHT })],
                                         borders: noBorderStyle,
                                         width: {
                                             size: tableWidths.duration,
