@@ -469,6 +469,17 @@ export async function cli(args) {
         ],
     });
 
+    const allTasks = [];
+    for (const [project, tasks] of Object.entries(data)) {
+        for (const [taskName, taskInfo] of Object.entries(tasks)) {
+            allTasks.push({
+                project,
+                name: taskName,
+                ...taskInfo,
+            });
+        }
+    }
+
     doc.addSection({
         headers,
         footers: {
@@ -535,57 +546,55 @@ export async function cli(args) {
                             }),
                         ],
                     }),
-                    ...Object.entries(data).flatMap(([project, tasks]) => {
-                        return Object.entries(tasks).map(([taskName, info]) => {
-                            return new TableRow({
-                                children: [
-                                    new TableCell({
-                                        children: [new Paragraph({ text: project, style: "Standard" })],
-                                        borders: noBorderStyle,
-                                        width: {
-                                            size: tableWidths.project,
-                                            type: WidthType.DXA,
-                                        }
-                                    }),
-                                    new TableCell({
-                                        children: [new Paragraph({ text: taskName, style: "Standard" })],
-                                        borders: noBorderStyle,
-                                        width: {
-                                            size: tableWidths.task,
-                                            type: WidthType.DXA,
-                                        }
-                                    }),
-                                    new TableCell({
-                                        children: [new Paragraph({ text: new Date(info.date).toLocaleDateString(), style: "Standard", alignment: AlignmentType.RIGHT })],
-                                        borders: noBorderStyle,
-                                        width: {
-                                            size: tableWidths.date,
-                                            type: WidthType.DXA,
-                                        }
-                                    }),
-                                    new TableCell({
-                                        children: [new Paragraph({ text: secondsToTime(info.duration) + " h", style: "Standard", alignment: AlignmentType.RIGHT })],
-                                        borders: noBorderStyle,
-                                        width: {
-                                            size: tableWidths.duration,
-                                            type: WidthType.DXA,
-                                        }
-                                    }),
-                                    new TableCell({
-                                        children: [new Paragraph({
-                                            text: `${info.amount.toFixed(2).toString().replace(".", ",")} €`,
-                                            style: "Standard",
-                                            alignment: AlignmentType.RIGHT,
-                                        })],
-                                        borders: noBorderStyle,
-                                        width: {
-                                            size: tableWidths.amount,
-                                            type: WidthType.DXA,
-                                        }
-                                    }),
-                                ],
-                            });
-                        })
+                    ...allTasks.sort((a, b) => new Date(a.date) - new Date(b.date)).map((task) => {
+                        return new TableRow({
+                            children: [
+                                new TableCell({
+                                    children: [new Paragraph({ text: task.project, style: "Standard" })],
+                                    borders: noBorderStyle,
+                                    width: {
+                                        size: tableWidths.project,
+                                        type: WidthType.DXA,
+                                    }
+                                }),
+                                new TableCell({
+                                    children: [new Paragraph({ text: task.name, style: "Standard" })],
+                                    borders: noBorderStyle,
+                                    width: {
+                                        size: tableWidths.task,
+                                        type: WidthType.DXA,
+                                    }
+                                }),
+                                new TableCell({
+                                    children: [new Paragraph({ text: new Date(task.date).toLocaleDateString(), style: "Standard", alignment: AlignmentType.RIGHT })],
+                                    borders: noBorderStyle,
+                                    width: {
+                                        size: tableWidths.date,
+                                        type: WidthType.DXA,
+                                    }
+                                }),
+                                new TableCell({
+                                    children: [new Paragraph({ text: secondsToTime(task.duration) + " h", style: "Standard", alignment: AlignmentType.RIGHT })],
+                                    borders: noBorderStyle,
+                                    width: {
+                                        size: tableWidths.duration,
+                                        type: WidthType.DXA,
+                                    }
+                                }),
+                                new TableCell({
+                                    children: [new Paragraph({
+                                        text: `${task.amount.toFixed(2).toString().replace(".", ",")} €`,
+                                        style: "Standard",
+                                        alignment: AlignmentType.RIGHT,
+                                    })],
+                                    borders: noBorderStyle,
+                                    width: {
+                                        size: tableWidths.amount,
+                                        type: WidthType.DXA,
+                                    }
+                                }),
+                            ],
+                        });
                     }),
                 ],
                 width: {
