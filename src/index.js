@@ -336,15 +336,15 @@ export async function cli(args) {
                         tableHeader: true,
                         children: [
                             new TableCell({
-                                children: [new Paragraph({ text: "Projekt", style: "Standard" })],
+                                children: [new Paragraph({ text: "Projekt", style: "bold" })],
                                 borders: borderBottomOnly,
                             }),
                             new TableCell({
-                                children: [new Paragraph({ text: "Dauer", style: "Standard" })],
+                                children: [new Paragraph({ text: "Dauer", style: "bold" })],
                                 borders: borderBottomOnly,
                             }),
                             new TableCell({
-                                children: [new Paragraph({ text: "Betrag", style: "Standard" })],
+                                children: [new Paragraph({ text: "Betrag", style: "bold" })],
                                 borders: borderBottomOnly,
                             }),
                         ],
@@ -408,7 +408,7 @@ export async function cli(args) {
                     new TableRow({
                         children: [
                             new TableCell({
-                                children: [new Paragraph({ text: "Kontoverbindung", style: "Standard" })],
+                                children: [new Paragraph({ text: "Kontoverbindung:", style: "Standard" })],
                                 borders: noBorderStyle,
                             }),
                             new TableCell({
@@ -452,7 +452,7 @@ export async function cli(args) {
                 text: "Mit freundlichen Grüßen",
                 style: "Standard",
                 spacing: {
-                    before: 600,
+                    before: 700,
                     after: 300,
                 },
             }),
