@@ -47,10 +47,10 @@ export async function cli(args) {
     for (const [project, tasks] of Object.entries(data)) {
         for (const [task, info] of Object.entries(tasks)) {
 
-            if (options.settings?.roundSeconds) {
+            if (options.settings && options.settings.roundSeconds) {
                 info.duration = Math.round(info.duration / 60) * 60;
             }
-            if (options.settings?.overrideBillingRate) {
+            if (options.settings && options.settings.overrideBillingRate) {
                 info.amount = options.settings.overrideBillingRate * info.duration / 60 / 60;
             }
             info.amount = Math.round(info.amount * 100) / 100;
@@ -428,6 +428,14 @@ export async function cli(args) {
                 borders: noBorderStyle
             }),
             new Paragraph({
+                text: options.customers[options.defaultCustomer].additionalText,
+                style: "Standard",
+                spacing: {
+                    before: 300,
+                    after: 300,
+                },
+            }),
+            new Paragraph({
                 text: `Ich bitte Sie, den Betrag von ${total.amount.toFixed(2).toString().replace(".", ",")} € unter Angabe der Rechnungsnummer ${options.invoiceId} auf folgendes Konto zu überweisen:`,
                 style: "Standard",
                 spacing: {
@@ -485,7 +493,7 @@ export async function cli(args) {
                 style: "Standard",
                 spacing: {
                     before: 700,
-                    after: 300,
+                    after: 700,
                 },
             }),
             new Paragraph({
