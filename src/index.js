@@ -26,9 +26,6 @@ export async function cli(args) {
         if (line.length < 3) {
             continue;
         }
-        if (line.length == 17) {
-            console.log(line);
-        }
         if (!data[line[fieldIndices.Project]]) {
             data[line[fieldIndices.Project]] = {};
         }
@@ -44,10 +41,20 @@ export async function cli(args) {
         data[line[fieldIndices.Project]][line[fieldIndices.Description]].amount += parseFloat(line[fieldIndices["Billable Amount (EUR)"]]);
     }
     
+    const options = JSON.parse(fs.readFileSync("config.json").toString());
+
     let total = {duration: 0, amount: 0};
     for (const [project, tasks] of Object.entries(data)) {
         for (const [task, info] of Object.entries(tasks)) {
+
+            if (options.settings?.roundSeconds) {
+                info.duration = Math.round(info.duration / 60) * 60;
+            }
+            if (options.settings?.overrideBillingRate) {
+                info.amount = options.settings.overrideBillingRate * info.duration / 60 / 60;
+            }
             info.amount = Math.round(info.amount * 100) / 100;
+
             total.amount += info.amount;
             total.duration += info.duration;
         }
@@ -66,7 +73,6 @@ export async function cli(args) {
     }
     allTasks = allTasks.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    const options = JSON.parse(fs.readFileSync("config.json").toString());
     
     const noBorderStyle = {
         bottom: {
