@@ -66,7 +66,7 @@ export async function cli(args) {
     }
     allTasks = allTasks.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    const options = JSON.parse(fs.readFileSync(path.join(__dirname, "../config.json")).toString());
+    const options = JSON.parse(fs.readFileSync("config.json").toString());
     
     const noBorderStyle = {
         bottom: {
