@@ -54,6 +54,18 @@ export async function cli(args) {
     }
     total.amount = Math.round(total.amount * 100) / 100;
 
+    let allTasks = [];
+    for (const [project, tasks] of Object.entries(data)) {
+        for (const [taskName, taskInfo] of Object.entries(tasks)) {
+            allTasks.push({
+                project,
+                name: taskName,
+                ...taskInfo,
+            });
+        }
+    }
+    allTasks = allTasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+
     const options = JSON.parse(fs.readFileSync(path.join(__dirname, "../config.json")).toString());
     
     const noBorderStyle = {
@@ -295,7 +307,7 @@ export async function cli(args) {
                                 borders: noBorderStyle,
                             }),
                             new TableCell({
-                                children: [new Paragraph({ text: "29.10. - 12.12.2020", style: "Standard" })],
+                                children: [new Paragraph({ text: `${new Date(allTasks[0].date).toLocaleDateString()} - ${new Date(allTasks[allTasks.length - 1].date).toLocaleDateString()}`, style: "Standard" })],
                                 borders: noBorderStyle,
                             }),
                         ],
@@ -477,17 +489,6 @@ export async function cli(args) {
         ],
     });
 
-    const allTasks = [];
-    for (const [project, tasks] of Object.entries(data)) {
-        for (const [taskName, taskInfo] of Object.entries(tasks)) {
-            allTasks.push({
-                project,
-                name: taskName,
-                ...taskInfo,
-            });
-        }
-    }
-
     doc.addSection({
         headers,
         footers: {
@@ -556,7 +557,7 @@ export async function cli(args) {
                             }),
                         ],
                     }),
-                    ...allTasks.sort((a, b) => new Date(a.date) - new Date(b.date)).map((task) => {
+                    ...allTasks.map((task) => {
                         return new TableRow({
                             children: [
                                 new TableCell({
