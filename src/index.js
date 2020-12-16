@@ -325,11 +325,11 @@ export async function cli(args) {
                                 borders: noBorderStyle,
                             }),
                             new TableCell({
-                                children: [new Paragraph({ text: "", style: "Standard" })],
+                                children: [new Paragraph({ text: "Steuer-Nr.", style: "Standard" })],
                                 borders: noBorderStyle,
                             }),
                             new TableCell({
-                                children: [new Paragraph({ text: "", style: "Standard" })],
+                                children: [new Paragraph({ text: options.me.taxId, style: "Standard" })],
                                 borders: noBorderStyle,
                             }),
                         ],
@@ -435,6 +435,15 @@ export async function cli(args) {
                     after: 300,
                 },
             }),
+            ...(options.settings.noSalesTax ? [
+                new Paragraph({
+                text: "Der Rechnungsbetrag enthält gem. § 6 Abs. 1 Z 27 UStG 1994 keine Umsatzsteuer.",
+                style: "Standard",
+                spacing: {
+                    before: 300,
+                },
+            }),
+            ] : []),
             new Paragraph({
                 text: `Ich bitte Sie, den Betrag von ${total.amount.toFixed(2).toString().replace(".", ",")} € unter Angabe der Rechnungsnummer ${options.invoiceId} auf folgendes Konto zu überweisen:`,
                 style: "Standard",
