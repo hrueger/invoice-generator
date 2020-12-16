@@ -1,6 +1,5 @@
-import * as path from "path";
 import * as fs from "fs";
-import { Paragraph, Document, Footer, Header, Packer, Table, TableRow, TableCell, WidthType, Border, BorderStyle, AlignmentType, HeadingLevel, TableLayoutType, TextRun, PageNumber } from "docx";
+import { Paragraph, Document, Footer, Header, Packer, Table, TableRow, TableCell, WidthType, BorderStyle, AlignmentType, Media, TableLayoutType, TextRun, PageNumber } from "docx";
 
 export async function cli(args) {
     if (!(args[2] && args[2].endsWith(".csv"))) {
@@ -502,9 +501,12 @@ export async function cli(args) {
                 style: "Standard",
                 spacing: {
                     before: 700,
-                    after: 700,
+                    after: 400,
                 },
             }),
+            ...(fs.existsSync("signature.png") ? [
+                new Paragraph(Media.addImage(doc, fs.readFileSync("signature.png"), 497/4, 83/4)),
+            ] : []),
             new Paragraph({
                 text: options.me.name,
                 style: "Standard"
