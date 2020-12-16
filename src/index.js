@@ -444,7 +444,7 @@ export async function cli(args) {
             }),
             ] : []),
             new Paragraph({
-                text: `Ich bitte Sie, den Betrag von ${total.amount.toFixed(2).toString().replace(".", ",")} € unter Angabe der Rechnungsnummer ${options.invoiceId} auf folgendes Konto zu überweisen:`,
+                text: `Ich bitte Sie, den Betrag von ${total.amount.toFixed(2).toString().replace(".", ",")} € innerhalb von ${options.settings.days} Tagen unter Angabe der Rechnungsnummer ${options.invoiceId} auf folgendes Konto zu überweisen:`,
                 style: "Standard",
                 spacing: {
                     before: 300,
