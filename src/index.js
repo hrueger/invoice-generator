@@ -42,6 +42,9 @@ export async function cli(args) {
     
     const options = JSON.parse(fs.readFileSync("config.json").toString());
 
+    let skypeTime = options.customers[options.defaultCustomer].skype.billable.split(":");
+    skypeTime = (parseInt(skypeTime[0]) * 60 * 60) + parseInt(skypeTime[1] * 60);
+
     let total = {duration: 0, amount: 0};
     for (const [project, tasks] of Object.entries(data)) {
         for (const [task, info] of Object.entries(tasks)) {
@@ -58,6 +61,8 @@ export async function cli(args) {
             total.duration += info.duration;
         }
     }
+    total.duration += skypeTime;
+    total.amount += skypeTime / 60 / 60 * options.settings.overrideBillingRate;
     total.amount = Math.round(total.amount * 100) / 100;
 
     let allTasks = [];
@@ -120,7 +125,7 @@ export async function cli(args) {
                             children: [
                                 new TableCell({
                                     children: [new Paragraph({
-                                        text: options.invoiceId,
+                                        text: args[3],
                                         style: "header"
                                     })],
                                     borders: noBorderStyle,
@@ -201,6 +206,7 @@ export async function cli(args) {
         duration: 60,
         amount: 50,
     };
+
     doc.addSection({
         headers,
         footers: {
@@ -280,7 +286,7 @@ export async function cli(args) {
                                 borders: noBorderStyle,
                             }),
                             new TableCell({
-                                children: [new Paragraph({ text: options.invoiceId, style: "Standard" })],
+                                children: [new Paragraph({ text: args[3], style: "Standard" })],
                                 borders: noBorderStyle,
                             }),
                         ],
@@ -399,7 +405,22 @@ export async function cli(args) {
                             ],
                         });
                     }),
-                    
+                    new TableRow({
+                        children: [
+                            new TableCell({
+                                children: [new Paragraph({ text: "Skype-Gespräche", style: "Standard" })],
+                                borders: noBorderStyle,
+                            }),
+                            new TableCell({
+                                children: [new Paragraph({ text: secondsToTime(skypeTime) + " h", style: "Standard" })],
+                                borders: noBorderStyle,
+                            }),
+                            new TableCell({
+                                children: [new Paragraph({ text: skypeTime / 60 / 60 * options.settings.overrideBillingRate + " €", style: "Standard", alignment: AlignmentType.RIGHT })],
+                                borders: noBorderStyle,
+                            }),
+                        ],
+                    }),
                     new TableRow({
                         children: [
                             new TableCell({
@@ -427,7 +448,7 @@ export async function cli(args) {
                 borders: noBorderStyle
             }),
             new Paragraph({
-                text: options.customers[options.defaultCustomer].additionalText,
+                text: `Von den geführten Skype-Gesprächen mit einer Gesamtdauer von ${options.customers[options.defaultCustomer].skype.all} Stunden werden ${options.customers[options.defaultCustomer].skype.billable} Stunden berechnet.` + options.customers[options.defaultCustomer].additionalText,
                 style: "Standard",
                 spacing: {
                     before: 300,
@@ -444,7 +465,7 @@ export async function cli(args) {
             }),
             ] : []),
             new Paragraph({
-                text: `Ich bitte Sie, den Betrag von ${total.amount.toFixed(2).toString().replace(".", ",")} € innerhalb von ${options.settings.days} Tagen unter Angabe der Rechnungsnummer ${options.invoiceId} auf folgendes Konto zu überweisen:`,
+                text: `Ich bitte Sie, den Betrag von ${total.amount.toFixed(2).toString().replace(".", ",")} € innerhalb von ${options.settings.days} Tagen unter Angabe der Rechnungsnummer ${args[3]} auf folgendes Konto zu überweisen:`,
                 style: "Standard",
                 spacing: {
                     before: 300,
@@ -645,7 +666,7 @@ export async function cli(args) {
 
 
     Packer.toBuffer(doc).then((buffer) => {
-        const filename = `Rechnung_${options.invoiceId}.docx`;
+        const filename = `Rechnung_${args[3]}.docx`;
         fs.writeFileSync(filename, buffer);
         var exec = require('child_process').exec;
         exec(`${process.platform == "darwin" ? "open" : process.platform == "win32" ? "start" : "xdg-open"} ${filename}`);
